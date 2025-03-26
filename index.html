@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Проверка устройства</title>
+  <script>
+    async function checkAndRedirect() {
+      try {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isTablet = /ipad|tablet|kindle|playbook/.test(userAgent);
+        const isMobile = /android|iphone|mobile/.test(userAgent) && !isTablet;
+        const isSimSupported = 'connection' in navigator && navigator.connection.type !== 'wifi';
+
+        // Пример получения гео по IP (через сторонний API)
+        const geoResp = await fetch('https://ipapi.co/json/');
+        const geoData = await geoResp.json();
+        const allowedCountries = ['RU', 'KZ', 'BY']; // Разрешённые гео
+        const isGeoAllowed = allowedCountries.includes(geoData.country);
+
+        // Проверка условий
+        if (isMobile && isGeoAllowed && isSimSupported) {
+          window.location.href = 'https://target-link.example.com';
+        } else {
+          // Кастомная 404
+          document.body.innerHTML = `
+            <h1>404</h1>
+            <p>Страница не найдена или ваше устройство не поддерживается.</p>
+          `;
+        }
+      } catch (err) {
+        console.error('Ошибка проверки:', err);
+        document.body.innerHTML = `
+          <h1>Ошибка</h1>
+          <p>Не удалось проверить устройство.</p>
+        `;
+      }
+    }
+
+    window.onload = checkAndRedirect;
+  </script>
+</head>
+<body>
+  <p>Проверка устройства...</p>
+</body>
+</html>
