@@ -10,29 +10,31 @@
         const userAgent = navigator.userAgent.toLowerCase();
         const isTablet = /ipad|tablet|kindle|playbook/.test(userAgent);
         const isMobile = /android|iphone|mobile/.test(userAgent) && !isTablet;
+        
+        // Условная проверка на наличие SIM
         const isSimSupported = 'connection' in navigator && navigator.connection.type !== 'wifi';
 
-        // Пример получения гео по IP (через сторонний API)
+        // Геолокация по IP
         const geoResp = await fetch('https://ipapi.co/json/');
         const geoData = await geoResp.json();
-        const allowedCountries = ['RU', 'KZ', 'BY']; // Разрешённые гео
+        const allowedCountries = ['RU', 'KZ', 'BY'];
         const isGeoAllowed = allowedCountries.includes(geoData.country);
 
-        // Проверка условий
-        if (isMobile && isGeoAllowed && isSimSupported) {
-          window.location.href = 'https://www.google.ru/';
+        if (isMobile && !isTablet && isGeoAllowed && isSimSupported) {
+          // Если всё ок — редирект на Google
+          window.location.href = 'https://www.google.com';
         } else {
           // Кастомная 404
           document.body.innerHTML = `
             <h1>404</h1>
-            <p>Страница не найдена или ваше устройство не поддерживается.</p>
+            <p>Ваше устройство или местоположение не поддерживается.</p>
           `;
         }
       } catch (err) {
         console.error('Ошибка проверки:', err);
         document.body.innerHTML = `
           <h1>Ошибка</h1>
-          <p>Не удалось проверить устройство.</p>
+          <p>Не удалось определить параметры устройства.</p>
         `;
       }
     }
