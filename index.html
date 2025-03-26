@@ -13,7 +13,7 @@
         const isSimSupported = 'connection' in navigator && navigator.connection.type !== 'wifi';
 
         // Пример получения гео по IP (через сторонний API)
-        const geoResp = await fetch('https://ipapi.co/json/');
+        const geoResp = await fetch('https://www.google.ru/');
         const geoData = await geoResp.json();
         const allowedCountries = ['RU', 'KZ', 'BY']; // Разрешённые гео
         const isGeoAllowed = allowedCountries.includes(geoData.country);
